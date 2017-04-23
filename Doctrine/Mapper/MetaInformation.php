@@ -326,7 +326,7 @@ class MetaInformation implements MetaInformationInterface
      */
     public function getDocumentKey()
     {
-        return $this->documentName . '_' . $this->getEntityId();
+        return $this->getEntityId();
     }
 
     /**

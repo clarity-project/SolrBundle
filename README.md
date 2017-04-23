@@ -213,6 +213,15 @@ Currently, a basic set of types is implemented:
 
 If you have a customized `schema.xml` than you don't need to setup a field-type. 
 
+### `prototype` property
+If you want to map custom named solr property on model object property as is
+
+    /**
+     * @Solr\Field(prototype="tiny_url")
+     */
+    protected $custom;
+
+
 ### `fieldModifier` property
 
 Solr supports partial updates of fields in an existing document. Supported values are:

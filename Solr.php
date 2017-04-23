@@ -261,7 +261,7 @@ class Solr implements SolrInterface
         $runQueryInIndex = $query->getIndex();
         $selectQuery = $this->getSelectQuery($query);
 
-        try {
+//        try {
             $response = $this->solrClientCore->select($selectQuery, $runQueryInIndex);
 
             $this->numberOfFoundDocuments = $response->getNumFound();
@@ -272,14 +272,14 @@ class Solr implements SolrInterface
             }
 
             return $entities;
-        } catch (\Exception $e) {
-            $errorEvent = new ErrorEvent(null, null, 'query solr');
-            $errorEvent->setException($e);
-
-            $this->eventManager->dispatch(Events::ERROR, $errorEvent);
-
-            throw new SolrException($e->getMessage(), $e->getCode(), $e);
-        }
+//        } catch (\Exception $e) {
+//            $errorEvent = new ErrorEvent(null, null, 'query solr');
+//            $errorEvent->setException($e);
+//
+//            $this->eventManager->dispatch(Events::ERROR, $errorEvent);
+//
+//            throw new SolrException($e->getMessage(), $e->getCode(), $e);
+//        }
     }
 
     /**

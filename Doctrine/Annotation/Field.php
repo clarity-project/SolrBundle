@@ -38,6 +38,11 @@ class Field extends Annotation
     public $fieldModifier;
 
     /**
+     * @var string
+     */
+    public $prototype;
+
+    /**
      * @var array
      */
     private static $TYP_MAPPING = array();
@@ -82,7 +87,7 @@ class Field extends Annotation
      */
     public function getNameWithAlias()
     {
-        return $this->normalizeName($this->name) . $this->getTypeSuffix($this->type);
+        return $this->prototype ?: $this->normalizeName($this->name) . $this->getTypeSuffix($this->type);
     }
 
     /**
@@ -136,7 +141,7 @@ class Field extends Annotation
      */
     public function __toString()
     {
-        return $this->name;
+        return $this->prototype ?: $this->name;
     }
 
     /**

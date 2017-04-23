@@ -60,6 +60,28 @@ class ValueHydrator implements HydratorInterface
                 continue;
             }
 
+            //
+            // handle prototype option in annotation,
+            // allow to map custom defined solr document property to Document(Entity) property
+            //
+            if (in_array($property, array_keys($metaInformation->getFieldMapping()))) {
+                $prototypeMapperField = $metaInformation->getFieldMapping()[$property];
+
+                /** @var \FS\SolrBundle\Doctrine\Annotation\Field $metaInformationField */
+                $metaInformationField = $metaInformation->getField($prototypeMapperField);
+
+                if (null !== $metaInformationField->prototype) {
+
+                    $classProperty = $reflectionClass->getProperty($prototypeMapperField);
+                    $accessor = new PrivatePropertyAccessor($classProperty);
+                    $accessor->setValue($targetEntity, $value);
+
+                    $this->cache[$metaInformation->getDocumentName()][$property] = $accessor;
+                }
+
+                continue;
+
+            }
 
             if ($reflectionClass->hasProperty($this->removeFieldSuffix($property))) {
                 $classProperty = $reflectionClass->getProperty($this->removeFieldSuffix($property));

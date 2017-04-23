@@ -1,5 +1,5 @@
 {
-  "name": "floriansemm/solr-bundle",
+  "name": "clarity-project/solr-bundle",
   "type": "symfony-bundle",
   "description": "Symfony2 Solr integration bundle",
   "keywords": [
@@ -8,7 +8,7 @@
     "symfony",
     "solr"
   ],
-  "homepage": "https://github.com/floriansemm/SolrBundle",
+  "homepage": "https://github.com/clarity-project/SolrBundle",
   "license": "MIT",
   "require": {
     "php": "^7.0",

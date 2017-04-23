@@ -22,6 +22,7 @@ class AnnotationReader
     const FIELD_IDENTIFIER_CLASS = 'FS\SolrBundle\Doctrine\Annotation\Id';
     const DOCUMENT_INDEX_CLASS = 'FS\SolrBundle\Doctrine\Annotation\Document';
     const SYNCHRONIZATION_FILTER_CLASS = 'FS\SolrBundle\Doctrine\Annotation\SynchronizationFilter';
+    const RELATION_CLASS = 'FS\SolrBundle\Doctrine\Annotation\Relation';
 
     /**
      * @param Reader $reader
