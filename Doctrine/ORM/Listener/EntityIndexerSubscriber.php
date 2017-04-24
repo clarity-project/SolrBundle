@@ -6,6 +6,7 @@ use Doctrine\Common\EventSubscriber;
 use Doctrine\ORM\Event\LifecycleEventArgs;
 use FS\SolrBundle\Doctrine\AbstractIndexingListener;
 use FS\SolrBundle\Doctrine\Mapper\MetaInformationFactory;
+use FS\SolrBundle\Doctrine\Mapper\SolrMappingException;
 use FS\SolrBundle\SolrInterface;
 use Psr\Log\LoggerInterface;
 
@@ -36,6 +37,8 @@ class EntityIndexerSubscriber extends AbstractIndexingListener implements EventS
             $this->solr->updateDocument($entity);
         } catch (\RuntimeException $e) {
             $this->logger->debug($e->getMessage());
+        } catch (SolrMappingException $e) {
+
         }
     }
 
@@ -50,7 +53,10 @@ class EntityIndexerSubscriber extends AbstractIndexingListener implements EventS
             $this->solr->addDocument($entity);
         } catch (\RuntimeException $e) {
             $this->logger->debug($e->getMessage());
+        } catch (SolrMappingException $e) {
+
         }
+
     }
 
     /**
@@ -64,6 +70,8 @@ class EntityIndexerSubscriber extends AbstractIndexingListener implements EventS
             $this->solr->removeDocument($entity);
         } catch (\RuntimeException $e) {
             $this->logger->debug($e->getMessage());
+        } catch (SolrMappingException $e) {
+
         }
     }
 }
