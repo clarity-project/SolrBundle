@@ -3,6 +3,7 @@ namespace FS\SolrBundle\Doctrine\Mapper;
 
 use FS\SolrBundle\Doctrine\Annotation\Field;
 use FS\SolrBundle\Doctrine\Annotation\Id;
+use FS\SolrBundle\Doctrine\Annotation\Relation;
 
 /**
  * Holds meta-information about an entity
@@ -74,6 +75,11 @@ class MetaInformation implements MetaInformationInterface
      * @var string
      */
     private $doctrineMapperType;
+
+    /**
+     * @var array
+     */
+    private $relations = [];
 
     /**
      * {@inheritdoc}
@@ -230,6 +236,20 @@ class MetaInformation implements MetaInformationInterface
     }
 
     /**
+     * @param $property
+     *
+     * @return mixed|null
+     */
+    public function getRelation($property)
+    {
+        $relations = array_filter($this->relations, function(Relation $relation) use ($property) {
+            return $relation->name == $property;
+        });
+
+        return !empty($relations) ? array_pop($relations) : null;
+    }
+
+    /**
      * @param string $repository
      */
     public function setRepository($repository)
@@ -379,5 +399,21 @@ class MetaInformation implements MetaInformationInterface
         }
 
         return $this->identifier->generateId;
+    }
+
+    /**
+     * @return array
+     */
+    public function getRelations(): array
+    {
+        return $this->relations;
+    }
+
+    /**
+     * @param array $relations
+     */
+    public function setRelations(array $relations)
+    {
+        $this->relations = $relations;
     }
 }

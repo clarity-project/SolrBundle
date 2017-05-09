@@ -2,12 +2,15 @@
 
 namespace FS\SolrBundle\Doctrine\Hydration;
 
-use Doctrine\Common\Collections\Collection;
-use FS\SolrBundle\Doctrine\Annotation\Field;
 use FS\SolrBundle\Doctrine\Hydration\PropertyAccessor\MethodCallPropertyAccessor;
 use FS\SolrBundle\Doctrine\Hydration\PropertyAccessor\PrivatePropertyAccessor;
 use FS\SolrBundle\Doctrine\Hydration\PropertyAccessor\PropertyAccessorInterface;
+use FS\SolrBundle\Doctrine\Mapper\MetaInformationFactory;
 use FS\SolrBundle\Doctrine\Mapper\MetaInformationInterface;
+use FS\SolrBundle\Solr;
+use ix\Bundle\EndressBundle\Solr\Document\ProductVariantDocument;
+use ProxyManager\Factory\LazyLoadingGhostFactory;
+use ProxyManager\Proxy\GhostObjectInterface;
 
 /**
  * Maps all values of a given document on a target-entity
@@ -19,13 +22,18 @@ class ValueHydrator implements HydratorInterface
      */
     private $cache;
 
+    public function setSolr($solr)
+    {
+        var_dump($solr);exit;
+    }
+
     /**
      * {@inheritdoc}
      */
     public function hydrate($document, MetaInformationInterface $metaInformation)
     {
         if (!isset($this->cache[$metaInformation->getDocumentName()])) {
-            $this->cache[$metaInformation->getDocumentName()] = array();
+            $this->cache[$metaInformation->getDocumentName()] = [];
         }
 
         $targetEntity = $metaInformation->getEntity();
@@ -50,7 +58,7 @@ class ValueHydrator implements HydratorInterface
 
             // find setter method
             $camelCasePropertyName = $this->toCamelCase($this->removeFieldSuffix($property));
-            $setterMethodName = 'set'.ucfirst($camelCasePropertyName);
+            $setterMethodName = 'set' . ucfirst($camelCasePropertyName);
             if (method_exists($targetEntity, $setterMethodName)) {
                 $accessor = new MethodCallPropertyAccessor($setterMethodName);
                 $accessor->setValue($targetEntity, $value);
@@ -101,7 +109,47 @@ class ValueHydrator implements HydratorInterface
             $this->cache[$metaInformation->getDocumentName()][$property] = $accessor;
         }
 
+        $this->handleRelations($targetEntity, $metaInformation);
+
         return $targetEntity;
+    }
+
+    /**
+     * @param string                                          $targetEntity
+     * @param MetaInformationInterface|MetaInformationFactory $metaInformation
+     */
+    private function handleRelations($targetEntity, MetaInformationInterface $metaInformation)
+    {
+        $factory     = new LazyLoadingGhostFactory();
+
+        /** @var \FS\SolrBundle\Doctrine\Annotation\Relation $relations */
+        $relations = $metaInformation->getRelations();
+
+        foreach ($relations as $relation) {
+
+//            $children = $this->solr->getRepository($relation->getTarget())->findBy(['parent' => $targetEntity->getId()]);
+//            $initializer = function (
+//                GhostObjectInterface $ghostObject,
+//                string $method,
+//                array $parameters,
+//                & $initializer,
+//                array $properties
+//            ) use ($targetEntity)  {
+//                $initializer = null;
+//
+//                $properties["\0*\0parent"]                    = $targetEntity->getId();
+//
+//                return true;
+//            };
+//
+//            $instance = $factory->createProxy($relation->target, $initializer);
+//
+//            $name = $instance->getParent();
+
+//            $
+//            var_dump($instance->getName());exit;
+//            $targetEntity->{set}
+        }
     }
 
     /**

@@ -193,6 +193,25 @@ class AnnotationReader
     }
 
     /**
+     * @param $entity
+     *
+     * @return array
+     */
+    public function getRelations($entity)
+    {
+        $fields = $this->getPropertiesByType($entity, self::RELATION_CLASS);
+
+        $relations = [];
+        foreach ($fields as $field) {
+            if ($field instanceof Relation) {
+                $relations[] = $field;
+            }
+        }
+
+        return $relations;
+    }
+
+    /**
      * @param object $entity
      *
      * @return boolean
@@ -295,4 +314,5 @@ class AnnotationReader
 
         return $properties;
     }
+
 }
