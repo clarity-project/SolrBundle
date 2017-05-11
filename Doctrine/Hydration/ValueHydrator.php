@@ -8,9 +8,7 @@ use FS\SolrBundle\Doctrine\Hydration\PropertyAccessor\PropertyAccessorInterface;
 use FS\SolrBundle\Doctrine\Mapper\MetaInformationFactory;
 use FS\SolrBundle\Doctrine\Mapper\MetaInformationInterface;
 use FS\SolrBundle\Solr;
-use ix\Bundle\EndressBundle\Solr\Document\ProductVariantDocument;
-use ProxyManager\Factory\LazyLoadingGhostFactory;
-use ProxyManager\Proxy\GhostObjectInterface;
+
 
 /**
  * Maps all values of a given document on a target-entity
@@ -21,11 +19,6 @@ class ValueHydrator implements HydratorInterface
      * @var PropertyAccessorInterface[]
      */
     private $cache;
-
-    public function setSolr($solr)
-    {
-        var_dump($solr);exit;
-    }
 
     /**
      * {@inheritdoc}
@@ -109,16 +102,17 @@ class ValueHydrator implements HydratorInterface
             $this->cache[$metaInformation->getDocumentName()][$property] = $accessor;
         }
 
-        $this->handleRelations($targetEntity, $metaInformation);
+//        $this->handleRelations($targetEntity, $reflectionClass, $metaInformation);
 
         return $targetEntity;
     }
 
     /**
      * @param string                                          $targetEntity
+     * @param                                                 $reflectionClass
      * @param MetaInformationInterface|MetaInformationFactory $metaInformation
      */
-    private function handleRelations($targetEntity, MetaInformationInterface $metaInformation)
+    private function handleRelations($targetEntity, $reflectionClass, MetaInformationInterface $metaInformation)
     {
         $factory     = new LazyLoadingGhostFactory();
 
@@ -127,25 +121,33 @@ class ValueHydrator implements HydratorInterface
 
         foreach ($relations as $relation) {
 
+//            var_dump($relation);exit;
 //            $children = $this->solr->getRepository($relation->getTarget())->findBy(['parent' => $targetEntity->getId()]);
-//            $initializer = function (
-//                GhostObjectInterface $ghostObject,
-//                string $method,
-//                array $parameters,
-//                & $initializer,
-//                array $properties
-//            ) use ($targetEntity)  {
-//                $initializer = null;
-//
-//                $properties["\0*\0parent"]                    = $targetEntity->getId();
-//
-//                return true;
-//            };
-//
-//            $instance = $factory->createProxy($relation->target, $initializer);
-//
+            $initializer = function (
+                GhostObjectInterface $ghostObject,
+                string $method,
+                array $parameters,
+                & $initializer,
+                array $properties
+            ) use ($targetEntity)  {
+                $initializer = null;
+
+                $properties["\0*\0parent"]                    = $targetEntity->getId();
+
+                return true;
+            };
+
+            $instance = $factory->createProxy($relation->target, $initializer);
+
+            $classProperty = $reflectionClass->getProperty($relation->name);
+            $accessor = new PrivatePropertyAccessor($classProperty);
+
+            $accessor->setValue($targetEntity, $instance);
+//            $targetEntity->{}
+
 //            $name = $instance->getParent();
 
+            var_dump($targetEntity);exit;
 //            $
 //            var_dump($instance->getName());exit;
 //            $targetEntity->{set}
@@ -216,5 +218,13 @@ class ValueHydrator implements HydratorInterface
     public function mapValue($fieldName, $value, MetaInformationInterface $metaInformation)
     {
         return true;
+    }
+
+    /**
+     * @param Solr $solr
+     */
+    public function setSolr(Solr $solr)
+    {
+        $this->solr = $solr;
     }
 } 

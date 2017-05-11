@@ -76,9 +76,14 @@
         </service>
 
         <service id="solr.doctrine.hydration.no_database_value_hydrator" class="FS\SolrBundle\Doctrine\Hydration\NoDatabaseValueHydrator">
+            <argument type="service" id="solr.doctrine.hydration.relation_hydrator"/>
         </service>
 
         <service id="solr.doctrine.hydration.doctrine_value_hydrator" class="FS\SolrBundle\Doctrine\Hydration\DoctrineValueHydrator">
+        </service>
+
+        <service id="solr.doctrine.hydration.relation_hydrator" class="FS\SolrBundle\Doctrine\Hydration\NoDatabaseRelationHydrator" lazy="true">
+            <argument type="service" id="solr.client"/>
         </service>
 
         <service id="solr.doctrine.hydration.index_hydrator" class="FS\SolrBundle\Doctrine\Hydration\IndexHydrator">
