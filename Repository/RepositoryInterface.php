@@ -33,4 +33,12 @@ interface RepositoryInterface
      * @return array
      */
     public function findAll();
+
+
+    /**
+     * @param array $ids
+     *
+     * @return array
+     */
+    public function findByIds(array $ids);
 }

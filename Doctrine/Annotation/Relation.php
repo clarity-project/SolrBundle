@@ -34,6 +34,11 @@ class Relation extends Annotation
     public $name;
 
     /**
+     * @var string
+     */
+    public $property;
+
+    /**
      * @return string
      */
     public function __toString()
@@ -72,5 +77,22 @@ class Relation extends Annotation
     {
         $this->type = $type;
     }
+
+    /**
+     * @return string
+     */
+    public function getProperty(): string
+    {
+        return $this->property;
+    }
+
+    /**
+     * @param string $property
+     */
+    public function setProperty(string $property)
+    {
+        $this->property = $property;
+    }
+
 
 }

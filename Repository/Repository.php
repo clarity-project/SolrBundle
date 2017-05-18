@@ -124,6 +124,10 @@ class Repository implements RepositoryInterface
         return array_pop($found);
     }
 
+    public function findByIds(array $ids)
+    {
+    }
+
     /**
      * @return QueryBuilderInterface
      */

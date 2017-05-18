@@ -124,4 +124,9 @@ interface MetaInformationInterface
      * @return string
      */
     public function getDoctrineMapperType();
+
+    /**
+     * @return array
+     */
+    public function getRelations();
 }

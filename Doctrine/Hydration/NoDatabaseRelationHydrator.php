@@ -5,11 +5,12 @@ namespace FS\SolrBundle\Doctrine\Hydration;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use FS\SolrBundle\Doctrine\Mapper\MetaInformationInterface;
+use FS\SolrBundle\Repository\RepositoryInterface;
 use FS\SolrBundle\Solr;
 use FS\SolrBundle\Doctrine\Hydration\PropertyAccessor\PrivatePropertyAccessor;
 
 /**
- * Class RelationHydrator
+ * Class NoDatabaseRelationHydrator
  *
  * @author Vladislav Shishko <vladislav.shishko@infolox.de>
  */
@@ -48,8 +49,10 @@ class NoDatabaseRelationHydrator implements HydratorInterface
             /** @var \FS\SolrBundle\Doctrine\Annotation\Relation $relation */
             if ($relation->getType() == 'collection') {
 
-                $children = $this->solr->getRepository($relation->getTarget())->findBy(['parent' => $targetEntity->getId()]);
-
+                /** @var RepositoryInterface $repository */
+                $repository = $this->solr->getRepository($relation->getTarget());
+                
+                $children = $repository->findByIds((array) $targetEntity->{'get'. ucfirst($relation->name)}());
                 $classProperty = $reflectionClass->getProperty($relation->name);
                 $accessor = new PrivatePropertyAccessor($classProperty);
 
