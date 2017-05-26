@@ -48,7 +48,7 @@ class NoDatabaseRelationHydrator implements HydratorInterface
         foreach ($relations as $relation) {
             /** @var \FS\SolrBundle\Doctrine\Annotation\Relation $relation */
             $children = $this->solr->getRepository($relation->getTarget())->findBy([
-                'parent' => $targetEntity->getId(),
+                'parentLocations' => $targetEntity->getId(),
                 'type' => $relation->getType()
             ]);
 
